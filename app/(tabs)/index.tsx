@@ -1,6 +1,6 @@
 import { theme } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,9 +12,27 @@ import {
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
+  const [toDos, setToDos] = useState({});
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
-  const onChangeText = (payload: any) => setText(payload);
+  const onChangeText = (payload: string) => setText(payload);
+
+  useEffect(() => {
+    console.log(toDos);
+  }, [toDos]);
+
+  const addToDo = () => {
+    console.log("enter");
+    if (text === "") {
+      return;
+    }
+    // array 대신 Object를 사용. 왜지?
+    const newToDos = Object.assign({}, toDos, {
+      [Date.now()]: { text, work: working },
+    });
+    setToDos(newToDos);
+    setText("");
+  };
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -37,9 +55,10 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </View>
-      {/* 얘는 Input + TextArea */}
       <TextInput
+        onSubmitEditing={addToDo}
         onChangeText={onChangeText}
+        returnKeyType="done"
         value={text}
         placeholder={working ? "Add a To Do" : "Where do you want to go?"}
         style={styles.input}
