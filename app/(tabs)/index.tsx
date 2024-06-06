@@ -1,6 +1,6 @@
 import { theme } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,10 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
+
+// 지워진 거긴 한데..
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const STORAGE_KEY = "@toDos";
 
 interface ToDo {
   text: string;
@@ -23,10 +27,25 @@ export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
   const [toDos, setToDos] = useState<ToDoList>({});
+
+  useEffect(() => {
+    loadToDos();
+  }, []);
+
+  const saveToDos = async (toSave: Object) => {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  };
+
+  const loadToDos = async () => {
+    const s = await AsyncStorage.getItem(STORAGE_KEY);
+    const parsedToDos = s ? JSON.parse(s) : {};
+    setToDos(parsedToDos);
+  };
+
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
   const onChangeText = (payload: string) => setText(payload);
-  const addToDo = () => {
+  const addToDo = async () => {
     if (text === "") {
       return;
     }
@@ -34,8 +53,8 @@ export default function App() {
       [Date.now()]: { text, work: working },
     });
     setToDos(newToDos);
+    await saveToDos(newToDos);
     setText("");
-    console.log(toDos);
   };
   return (
     <View style={styles.container}>
