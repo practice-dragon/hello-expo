@@ -1,32 +1,36 @@
 import { theme } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
+
+interface ToDo {
+  text: string;
+  work: boolean;
+}
+
+interface ToDoList {
+  [key: string]: ToDo;
+}
 
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
-  const [toDos, setToDos] = useState({});
+  const [toDos, setToDos] = useState<ToDoList>({});
   const travel = () => setWorking(false);
   const work = () => setWorking(true);
   const onChangeText = (payload: string) => setText(payload);
-
-  useEffect(() => {
-    console.log(toDos);
-  }, [toDos]);
-
   const addToDo = () => {
     console.log("enter");
     if (text === "") {
       return;
     }
-    // array 대신 Object를 사용. 왜지?
     const newToDos = Object.assign({}, toDos, {
       [Date.now()]: { text, work: working },
     });
@@ -63,6 +67,13 @@ export default function App() {
         placeholder={working ? "Add a To Do" : "Where do you want to go?"}
         style={styles.input}
       />
+      <ScrollView>
+        {Object.keys(toDos).map((key) => (
+          <View style={styles.toDo} key={key}>
+            <Text style={styles.toDoText}>{toDos[key].text}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -88,6 +99,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 30,
     marginTop: 20,
+    marginBottom: 5,
     fontSize: 18,
+  },
+  toDo: {
+    backgroundColor: theme.grey,
+    margin: 5,
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    borderRadius: 15,
+  },
+  toDoText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
