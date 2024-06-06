@@ -27,7 +27,6 @@ export default function App() {
   const work = () => setWorking(true);
   const onChangeText = (payload: string) => setText(payload);
   const addToDo = () => {
-    console.log("enter");
     if (text === "") {
       return;
     }
@@ -36,6 +35,7 @@ export default function App() {
     });
     setToDos(newToDos);
     setText("");
+    console.log(toDos);
   };
   return (
     <View style={styles.container}>
@@ -68,11 +68,13 @@ export default function App() {
         style={styles.input}
       />
       <ScrollView>
-        {Object.keys(toDos).map((key) => (
-          <View style={styles.toDo} key={key}>
-            <Text style={styles.toDoText}>{toDos[key].text}</Text>
-          </View>
-        ))}
+        {Object.keys(toDos).map((key) =>
+          toDos[key].work === working ? (
+            <View style={styles.toDo} key={key}>
+              <Text style={styles.toDoText}>{toDos[key].text}</Text>
+            </View>
+          ) : null
+        )}
       </ScrollView>
     </View>
   );
