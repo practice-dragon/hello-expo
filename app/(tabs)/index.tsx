@@ -8,10 +8,12 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 
 // 지워진 거긴 한데..
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Fontisto } from "@expo/vector-icons";
 const STORAGE_KEY = "@toDos";
 
 interface ToDo {
@@ -56,6 +58,22 @@ export default function App() {
     await saveToDos(newToDos);
     setText("");
   };
+
+  const deleteToDo = (key: string) => {
+    Alert.alert("Delete To Do", "Are you sure?", [
+      { text: "Cancel" },
+      {
+        text: "I'm Sure",
+        style: "destructive",
+        onPress: async () => {
+          const newToDos = { ...toDos };
+          delete newToDos[key];
+          saveToDos(newToDos);
+          setToDos(newToDos);
+        },
+      },
+    ]);
+  };
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -91,6 +109,9 @@ export default function App() {
           toDos[key].work === working ? (
             <View style={styles.toDo} key={key}>
               <Text style={styles.toDoText}>{toDos[key].text}</Text>
+              <TouchableOpacity onPress={() => deleteToDo(key)}>
+                <Fontisto name="trash" size={18} color={"red"} />
+              </TouchableOpacity>
             </View>
           ) : null
         )}
@@ -129,6 +150,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 40,
     borderRadius: 15,
+    // display: "flex", 안해줘도 되넹
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   toDoText: {
     color: "white",
