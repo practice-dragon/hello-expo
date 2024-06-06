@@ -1,36 +1,49 @@
 import { theme } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
 import {
   StyleSheet,
-  View,
   Text,
+  View,
   TouchableOpacity,
-  TouchableHighlight,
+  TextInput,
 } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-export default function HomeScreen() {
+export default function App() {
+  const [working, setWorking] = useState(true);
+  const [text, setText] = useState("");
+  const travel = () => setWorking(false);
+  const work = () => setWorking(true);
+  const onChangeText = (payload: any) => setText(payload);
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" /> <StatusBar style="auto" />
+      <StatusBar style="auto" />
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Text style={styles.btnText}>Work</Text>
+        <TouchableOpacity onPress={work}>
+          <Text
+            style={{ ...styles.btnText, color: working ? "white" : theme.grey }}
+          >
+            Work
+          </Text>
         </TouchableOpacity>
-        {/* onPress 속성을 넣어줘야만 스타일 적용이 됨 */}
-        <TouchableHighlight
-          onPress={() => console.log("onPress")}
-          underlayColor={"red"}
-          activeOpacity={0.5}
-        >
-          <Text style={styles.btnText}>Travel</Text>
-        </TouchableHighlight>
-        {/* 애니메이션이 없는 Touchable */}
-        {/* opPress에도 다양한 종류가 있음 web이랑 확실히 다르죠? */}
-        <TouchableWithoutFeedback onPress={() => console.log("onPress")}>
-          <Text style={styles.btnText}>33</Text>
-        </TouchableWithoutFeedback>
+        <TouchableOpacity onPress={travel}>
+          <Text
+            style={{
+              ...styles.btnText,
+              color: !working ? "white" : theme.grey,
+            }}
+          >
+            Travel
+          </Text>
+        </TouchableOpacity>
       </View>
+      {/* 얘는 Input + TextArea */}
+      <TextInput
+        onChangeText={onChangeText}
+        value={text}
+        placeholder={working ? "Add a To Do" : "Where do you want to go?"}
+        style={styles.input}
+      />
     </View>
   );
 }
@@ -39,18 +52,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.bg,
-    alignItems: "center",
     paddingHorizontal: 20,
   },
   header: {
     justifyContent: "space-between",
     flexDirection: "row",
-    marginTop: 80,
-    width: "100%",
+    marginTop: 100,
   },
   btnText: {
     fontSize: 38,
     fontWeight: "600",
-    color: "white",
+  },
+  input: {
+    backgroundColor: "white",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 20,
+    fontSize: 18,
   },
 });
