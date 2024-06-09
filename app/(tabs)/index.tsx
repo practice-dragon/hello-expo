@@ -110,7 +110,7 @@ export default function App() {
             <View style={styles.toDo} key={key}>
               <Text style={styles.toDoText}>{toDos[key].text}</Text>
               <TouchableOpacity onPress={() => deleteToDo(key)}>
-                <Fontisto name="trash" size={18} color={"red"} />
+                <Fontisto name="trash" size={18} color={theme.grey} />
               </TouchableOpacity>
             </View>
           ) : null
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   toDo: {
-    backgroundColor: theme.grey,
+    backgroundColor: "#1d1d1d",
     margin: 5,
     paddingVertical: 20,
     paddingHorizontal: 40,
